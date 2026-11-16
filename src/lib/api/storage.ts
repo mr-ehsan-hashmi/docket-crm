@@ -24,6 +24,15 @@ function isDatabase(value: unknown): value is Database {
   );
 }
 
+function parseDatabase(raw: string): Database | null {
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    return isDatabase(parsed) ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
 export function writeDatabase(database: Database): void {
   try {
     localStorage.setItem(DATABASE_KEY, JSON.stringify(database));
@@ -43,14 +52,10 @@ export function readDatabase(): Database {
     throw new ApiError("storage", "This browser is blocking local storage, so contacts can't be loaded.");
   }
 
-  if (raw !== null) {
-    try {
-      const parsed: unknown = JSON.parse(raw);
-      if (isDatabase(parsed)) return parsed;
-    } catch {
-    }
-  }
+  const saved = raw === null ? null : parseDatabase(raw);
+  if (saved) return saved;
 
+  // first visit, or the saved data is unreadable: start from the sample set
   const seeded = buildSeedDatabase(Date.now(), createId);
   writeDatabase(seeded);
   return seeded;

@@ -1,3 +1,4 @@
+// lets a reviewer force every request to fail, to see the error states
 const FAILURE_KEY = "docket:simulate-failure";
 const listeners = new Set<() => void>();
 
@@ -14,6 +15,7 @@ export function setFailureSimulated(enabled: boolean): void {
     if (enabled) localStorage.setItem(FAILURE_KEY, "on");
     else localStorage.removeItem(FAILURE_KEY);
   } catch {
+    // storage is blocked, so the switch simply stays off
   }
   listeners.forEach((listener) => listener());
 }
