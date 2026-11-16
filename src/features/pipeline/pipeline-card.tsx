@@ -2,9 +2,10 @@
 
 import { useDraggable } from "@dnd-kit/core";
 import Link from "next/link";
+import { LastActivity } from "@/components/ui/last-activity";
 import { PRACTICE_AREA_LABELS, STATUS_LABELS, UNASSIGNED_LABEL } from "@/lib/contacts/labels";
 import { CONTACT_STATUSES, type Contact, type ContactStatus } from "@/lib/contacts/types";
-import { cn, formatRelative } from "@/lib/format";
+import { cn } from "@/lib/format";
 
 interface CardBodyProps {
   contact: Contact;
@@ -25,7 +26,7 @@ function CardBody({ contact, onMove }: CardBodyProps) {
       </Link>
       <p className="mt-0.5 text-sm text-ink-soft">{PRACTICE_AREA_LABELS[contact.practiceArea]}</p>
       <p className="mt-2 text-xs text-ink-faint">
-        {contact.assignedTo || UNASSIGNED_LABEL} · {formatRelative(contact.updatedAt)}
+        {contact.assignedTo || UNASSIGNED_LABEL} · <LastActivity contact={contact} />
       </p>
 
       {onMove ? (

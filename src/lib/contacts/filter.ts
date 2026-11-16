@@ -1,3 +1,4 @@
+import { needsFollowUp } from "./follow-up";
 import { PRACTICE_AREA_LABELS } from "./labels";
 import { CONTACT_STATUSES, type Contact, type ContactStatus } from "./types";
 
@@ -15,12 +16,14 @@ export type StatusFilter = ContactStatus | "all";
 export interface ContactFilters {
   query: string;
   status: StatusFilter;
+  followUp: boolean;
   sort: ContactSort;
 }
 
 export const DEFAULT_FILTERS: ContactFilters = {
   query: "",
   status: "all",
+  followUp: false,
   sort: "updated",
 };
 
@@ -34,6 +37,7 @@ export function parseFilters(params: URLSearchParams): ContactFilters {
   return {
     query: params.get("q") ?? DEFAULT_FILTERS.query,
     status: isOneOf(CONTACT_STATUSES, status) ? status : DEFAULT_FILTERS.status,
+    followUp: params.get("followup") === "1",
     sort: isOneOf(CONTACT_SORTS, sort) ? sort : DEFAULT_FILTERS.sort,
   };
 }
@@ -42,12 +46,13 @@ export function serializeFilters(filters: ContactFilters): string {
   const params = new URLSearchParams();
   if (filters.query.trim() !== "") params.set("q", filters.query);
   if (filters.status !== DEFAULT_FILTERS.status) params.set("status", filters.status);
+  if (filters.followUp) params.set("followup", "1");
   if (filters.sort !== DEFAULT_FILTERS.sort) params.set("sort", filters.sort);
   return params.toString();
 }
 
 export function hasActiveFilters(filters: ContactFilters): boolean {
-  return filters.query.trim() !== "" || filters.status !== "all";
+  return filters.query.trim() !== "" || filters.status !== "all" || filters.followUp;
 }
 
 function matchesQuery(contact: Contact, query: string): boolean {
@@ -74,24 +79,38 @@ const comparators: Record<ContactSort, (a: Contact, b: Contact) => number> = {
   name: (a, b) => a.fullName.localeCompare(b.fullName, "en", { sensitivity: "base" }),
 };
 
-export function filterContacts(contacts: Contact[], filters: ContactFilters): Contact[] {
+type Narrowing = Pick<ContactFilters, "query" | "followUp">;
+
+function matchesNarrowing(contact: Contact, { query, followUp }: Narrowing, now: number): boolean {
+  return matchesQuery(contact, query) && (!followUp || needsFollowUp(contact, now));
+}
+
+export function filterContacts(contacts: Contact[], filters: ContactFilters, now: number = Date.now()): Contact[] {
   return contacts
     .filter(
       (contact) =>
-        (filters.status === "all" || contact.status === filters.status) &&
-        matchesQuery(contact, filters.query),
+        (filters.status === "all" || contact.status === filters.status) && matchesNarrowing(contact, filters, now),
     )
     .sort(comparators[filters.sort]);
 }
 
-export function countByStatus(contacts: Contact[], query: string): Record<StatusFilter, number> {
+// counts ignore the selected tab on purpose: each tab shows what you'd get by clicking it
+export function countByStatus(
+  contacts: Contact[],
+  narrowing: Narrowing,
+  now: number = Date.now(),
+): Record<StatusFilter, number> {
   const counts: Record<StatusFilter, number> = { all: 0, lead: 0, active: 0, closed: 0 };
   for (const contact of contacts) {
-    if (!matchesQuery(contact, query)) continue;
+    if (!matchesNarrowing(contact, narrowing, now)) continue;
     counts.all += 1;
     counts[contact.status] += 1;
   }
   return counts;
+}
+
+export function countFollowUps(contacts: Contact[], query: string, now: number = Date.now()): number {
+  return contacts.filter((contact) => matchesNarrowing(contact, { query, followUp: true }, now)).length;
 }
 
 export function groupByStatus(contacts: Contact[]): Record<ContactStatus, Contact[]> {

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   DEFAULT_FILTERS,
   countByStatus,
+  countFollowUps,
   filterContacts,
   parseFilters,
   serializeFilters,
@@ -90,14 +91,50 @@ describe("filterContacts", () => {
 
 describe("countByStatus", () => {
   it("counts every status within the current search", () => {
-    expect(countByStatus(contacts, "")).toEqual({ all: 3, lead: 1, active: 1, closed: 1 });
-    expect(countByStatus(contacts, "zara")).toEqual({ all: 1, lead: 1, active: 0, closed: 0 });
+    expect(countByStatus(contacts, { query: "", followUp: false })).toEqual({ all: 3, lead: 1, active: 1, closed: 1 });
+    expect(countByStatus(contacts, { query: "zara", followUp: false })).toEqual({
+      all: 1,
+      lead: 1,
+      active: 0,
+      closed: 0,
+    });
+  });
+});
+
+describe("follow-up filter", () => {
+  const now = new Date("2026-03-10T00:00:00.000Z").getTime();
+  const people: Contact[] = [
+    makeContact({ fullName: "Quiet Lead", status: "lead", updatedAt: "2026-03-05T00:00:00.000Z" }),
+    makeContact({ fullName: "Fresh Lead", status: "lead", updatedAt: "2026-03-09T00:00:00.000Z" }),
+    makeContact({ fullName: "Old Matter", status: "active", updatedAt: "2026-01-05T00:00:00.000Z" }),
+  ];
+
+  it("keeps only leads that have gone quiet", () => {
+    expect(names(filterContacts(people, { ...DEFAULT_FILTERS, followUp: true }, now))).toEqual(["Quiet Lead"]);
+  });
+
+  it("combines with search", () => {
+    expect(filterContacts(people, { ...DEFAULT_FILTERS, followUp: true, query: "fresh" }, now)).toEqual([]);
+  });
+
+  it("is reflected in the tab counts", () => {
+    expect(countByStatus(people, { query: "", followUp: true }, now)).toEqual({
+      all: 1,
+      lead: 1,
+      active: 0,
+      closed: 0,
+    });
+  });
+
+  it("counts follow-ups within the current search", () => {
+    expect(countFollowUps(people, "", now)).toBe(1);
+    expect(countFollowUps(people, "fresh", now)).toBe(0);
   });
 });
 
 describe("URL filters", () => {
   it("round-trips non-default filters", () => {
-    const filters = { query: "ali", status: "lead", sort: "name" } as const;
+    const filters = { query: "ali", status: "lead", followUp: true, sort: "name" } as const;
     expect(parseFilters(new URLSearchParams(serializeFilters(filters)))).toEqual(filters);
   });
 

@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { ChevronRightIcon } from "@/components/icons";
+import { LastActivity } from "@/components/ui/last-activity";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { PRACTICE_AREA_LABELS, UNASSIGNED_LABEL } from "@/lib/contacts/labels";
 import type { Contact } from "@/lib/contacts/types";
-import { cn, formatRelative } from "@/lib/format";
+import { cn } from "@/lib/format";
 
-const ROW_GRID = "md:grid md:grid-cols-[minmax(0,2.2fr)_minmax(0,1.2fr)_7rem_minmax(0,1.2fr)_7.5rem_1rem] md:items-center md:gap-4";
+const ROW_GRID = "md:grid md:grid-cols-[minmax(0,2.2fr)_minmax(0,1.2fr)_7rem_minmax(0,1.2fr)_8.5rem_1rem] md:items-center md:gap-4";
 const LIST_FRAME = "overflow-hidden rounded-lg border border-rule bg-card shadow-card";
 
 function ListHeader() {
@@ -49,7 +50,7 @@ function ContactRow({ contact }: { contact: Contact }) {
             {" · "}
             {contact.assignedTo || UNASSIGNED_LABEL}
             {" · "}
-            {formatRelative(contact.updatedAt)}
+            <LastActivity contact={contact} />
           </span>
         </p>
         <div className="hidden md:block">
@@ -58,7 +59,9 @@ function ContactRow({ contact }: { contact: Contact }) {
         <p className={cn("hidden truncate text-sm md:block", contact.assignedTo ? "text-ink-soft" : "text-ink-faint")}>
           {contact.assignedTo || UNASSIGNED_LABEL}
         </p>
-        <p className="hidden text-sm text-ink-soft md:block">{formatRelative(contact.updatedAt)}</p>
+        <p className="hidden text-sm text-ink-soft md:block">
+          <LastActivity contact={contact} />
+        </p>
         <ChevronRightIcon className="hidden text-ink-faint group-hover:text-brand md:block" />
       </Link>
     </li>

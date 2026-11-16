@@ -11,10 +11,13 @@ export function useContactFilters() {
   const searchParams = useSearchParams();
   const urlFilters = useMemo(() => parseFilters(new URLSearchParams(searchParams)), [searchParams]);
 
+  // The search text is kept locally and mirrored to the url after a pause. Driving the
+  // input straight from useSearchParams drops keystrokes, because url updates land late.
   const [query, setQuery] = useState(urlFilters.query);
   const [writtenQuery, setWrittenQuery] = useState(urlFilters.query);
   const [seenUrlQuery, setSeenUrlQuery] = useState(urlFilters.query);
 
+  // url changed and it wasn't us (nav link, back button): take the url's value
   if (urlFilters.query !== seenUrlQuery) {
     setSeenUrlQuery(urlFilters.query);
     if (urlFilters.query !== writtenQuery) setQuery(urlFilters.query);
@@ -48,7 +51,7 @@ export function useContactFilters() {
 
   const clearFilters = useCallback(() => {
     setQuery(DEFAULT_FILTERS.query);
-    writeUrl({ ...filters, query: DEFAULT_FILTERS.query, status: DEFAULT_FILTERS.status });
+    writeUrl({ ...DEFAULT_FILTERS, sort: filters.sort });
   }, [filters, writeUrl]);
 
   return { filters, setFilters, clearFilters };

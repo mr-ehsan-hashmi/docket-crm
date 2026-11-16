@@ -7,6 +7,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { LoadingRegion, Skeleton } from "@/components/ui/skeleton";
 import { ErrorState } from "@/components/ui/state-message";
 import { isNotFound } from "@/lib/api/errors";
+import { daysQuiet, needsFollowUp } from "@/lib/contacts/follow-up";
 import { PRACTICE_AREA_LABELS, REFERRAL_SOURCE_LABELS, UNASSIGNED_LABEL } from "@/lib/contacts/labels";
 import { useContactDetail } from "@/lib/contacts/queries";
 import type { Contact } from "@/lib/contacts/types";
@@ -141,6 +142,13 @@ export function ContactDetailScreen({ id }: { id: string }) {
           </>
         }
       />
+
+      {needsFollowUp(contact) ? (
+        <p className="mb-6 rounded-md border border-lead/30 bg-lead-tint/50 px-4 py-3 text-sm text-ink">
+          <strong className="font-semibold">Quiet for {daysQuiet(contact)} days.</strong> Add a note once someone has
+          followed up, or change the status if this has moved on.
+        </p>
+      ) : null}
 
       <div className={DETAIL_GRID}>
         <div className="space-y-10">
