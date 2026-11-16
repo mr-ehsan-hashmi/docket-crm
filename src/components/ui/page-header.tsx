@@ -1,6 +1,6 @@
-import Link from "next/link";
 import type { ReactNode } from "react";
 import { ArrowLeftIcon } from "../icons";
+import { AppLink } from "../unsaved-changes";
 
 interface PageHeaderProps {
   title: ReactNode;
@@ -13,13 +13,13 @@ export function PageHeader({ title, description, backLink, actions }: PageHeader
   return (
     <div className="mb-6 sm:mb-8">
       {backLink ? (
-        <Link
+        <AppLink
           href={backLink.href}
           className="mb-3 inline-flex items-center gap-1.5 rounded-sm text-sm text-ink-soft hover:text-ink"
         >
           <ArrowLeftIcon />
           {backLink.label}
-        </Link>
+        </AppLink>
       ) : null}
       <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
         <div className="min-w-0">

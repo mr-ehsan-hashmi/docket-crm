@@ -24,6 +24,7 @@ export function NewContactScreen() {
         submittingLabel="Adding…"
         cancelHref="/contacts"
         isSubmitting={createContact.isPending}
+        isSaved={createContact.isSuccess}
         submitError={createContact.error}
         onSubmit={(values) =>
           createContact.mutate(values, {

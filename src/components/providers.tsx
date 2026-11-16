@@ -3,6 +3,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { ReactNode } from "react";
 import { ToastProvider } from "./toast";
+import { UnsavedChangesProvider } from "./unsaved-changes";
 
 function createQueryClient() {
   return new QueryClient({
@@ -27,7 +28,9 @@ function getQueryClient() {
 export function Providers({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={getQueryClient()}>
-      <ToastProvider>{children}</ToastProvider>
+      <UnsavedChangesProvider>
+        <ToastProvider>{children}</ToastProvider>
+      </UnsavedChangesProvider>
     </QueryClientProvider>
   );
 }

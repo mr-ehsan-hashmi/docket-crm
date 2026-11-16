@@ -1,11 +1,10 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
-import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Button, buttonStyles } from "@/components/ui/button";
 import { Field, describedBy, inputClasses } from "@/components/ui/field";
+import { AppLink, useUnsavedChanges } from "@/components/unsaved-changes";
 import { describeError } from "@/lib/api/errors";
 import {
   ATTORNEYS,
@@ -54,6 +53,7 @@ interface ContactFormProps {
   cancelHref: string;
   onSubmit: (values: ContactFormValues) => void;
   isSubmitting: boolean;
+  isSaved: boolean;
   submitError: unknown;
 }
 
@@ -76,13 +76,14 @@ export function ContactForm({
   cancelHref,
   onSubmit,
   isSubmitting,
+  isSaved,
   submitError,
 }: ContactFormProps) {
   const {
     register,
     handleSubmit,
     control,
-    formState: { errors, isDirty, isSubmitSuccessful },
+    formState: { errors, isDirty },
   } = useForm<ContactFormInput, unknown, ContactFormValues>({
     resolver: zodResolver(contactFormSchema),
     defaultValues,
@@ -91,13 +92,7 @@ export function ContactForm({
 
   const summaryLength = useWatch({ control, name: "matterSummary" }).length;
 
-  const hasUnsavedChanges = isDirty && !isSubmitSuccessful;
-  useEffect(() => {
-    if (!hasUnsavedChanges) return;
-    const warn = (event: BeforeUnloadEvent) => event.preventDefault();
-    window.addEventListener("beforeunload", warn);
-    return () => window.removeEventListener("beforeunload", warn);
-  }, [hasUnsavedChanges]);
+  useUnsavedChanges(isDirty && !isSaved);
 
   const errorCount = Object.keys(errors).length;
 
@@ -248,9 +243,9 @@ export function ContactForm({
             {errorCount === 1 ? "1 field needs attention above." : `${errorCount} fields need attention above.`}
           </p>
         ) : null}
-        <Link href={cancelHref} className={buttonStyles({ variant: "ghost" })}>
+        <AppLink href={cancelHref} className={buttonStyles({ variant: "ghost" })}>
           Cancel
-        </Link>
+        </AppLink>
         <Button type="submit" variant="primary" disabled={isSubmitting}>
           {isSubmitting ? submittingLabel : submitLabel}
         </Button>

@@ -11,6 +11,7 @@ import { PRACTICE_AREA_LABELS, REFERRAL_SOURCE_LABELS, UNASSIGNED_LABEL } from "
 import { useContactDetail } from "@/lib/contacts/queries";
 import type { Contact } from "@/lib/contacts/types";
 import { formatDate, formatRelative } from "@/lib/format";
+import { useDocumentTitle } from "@/lib/use-document-title";
 import { ActivityTimeline } from "./activity-timeline";
 import { ContactNotFound } from "./contact-not-found";
 import { NotesPanel } from "./notes-panel";
@@ -95,6 +96,7 @@ export function ContactDetailSkeleton() {
 
 export function ContactDetailScreen({ id }: { id: string }) {
   const detailQuery = useContactDetail(id);
+  useDocumentTitle(detailQuery.data?.contact.fullName);
 
   if (detailQuery.isPending) {
     return (

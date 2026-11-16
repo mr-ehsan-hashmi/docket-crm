@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/format";
+import { AppLink } from "./unsaved-changes";
 
 const NAV_ITEMS = [
   { href: "/contacts", label: "Contacts" },
@@ -15,7 +15,7 @@ function NavList({ pathname }: { pathname: string | null }) {
       {NAV_ITEMS.map((item) => {
         const isCurrent = pathname !== null && pathname.startsWith(item.href);
         return (
-          <Link
+          <AppLink
             key={item.href}
             href={item.href}
             aria-current={isCurrent ? "page" : undefined}
@@ -27,7 +27,7 @@ function NavList({ pathname }: { pathname: string | null }) {
             )}
           >
             {item.label}
-          </Link>
+          </AppLink>
         );
       })}
     </nav>

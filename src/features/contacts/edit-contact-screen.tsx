@@ -7,6 +7,7 @@ import { ErrorState } from "@/components/ui/state-message";
 import { useToast } from "@/components/toast";
 import { isNotFound } from "@/lib/api/errors";
 import { useContactDetail, useUpdateContact } from "@/lib/contacts/queries";
+import { useDocumentTitle } from "@/lib/use-document-title";
 import { ContactForm, toFormInput } from "./contact-form";
 import { ContactNotFound } from "./contact-not-found";
 
@@ -61,6 +62,7 @@ export function EditContactScreen({ id }: { id: string }) {
         submittingLabel="Saving…"
         cancelHref={detailHref}
         isSubmitting={updateContact.isPending}
+        isSaved={updateContact.isSuccess}
         submitError={updateContact.error}
         onSubmit={(values) =>
           updateContact.mutate(values, {
@@ -75,6 +77,7 @@ export function EditContactScreen({ id }: { id: string }) {
   }
 
   const name = detailQuery.data?.contact.fullName;
+  useDocumentTitle(name ? `Edit ${name}` : undefined);
 
   return (
     <div className="mx-auto max-w-3xl">
