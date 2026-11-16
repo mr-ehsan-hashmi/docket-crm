@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-instrument), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-newsreader), Georgia, "Times New Roman", serif;
+
+  --color-paper: #f6f3ec;
+  --color-card: #fffdf8;
+  --color-ink: #1d1b16;
+  --color-ink-soft: #57524a;
+  --color-ink-faint: #7d776b;
+  --color-rule: #e3ddcf;
+  --color-rule-strong: #cdc5b2;
+
+  --color-brand: #1f4a3d;
+  --color-brand-deep: #163529;
+  --color-brand-tint: #e4ede8;
+
+  --color-lead: #8a5208;
+  --color-lead-tint: #f9ecd0;
+  --color-active: #1c6245;
+  --color-active-tint: #dcefe4;
+  --color-closed: #555a61;
+  --color-closed-tint: #e8e7e2;
+
+  --color-danger: #9f261b;
+  --color-danger-tint: #fae6e2;
+
+  --shadow-card: 0 1px 0 rgb(29 27 22 / 0.04), 0 1px 3px rgb(29 27 22 / 0.06);
+  --shadow-lift: 0 10px 24px -8px rgb(29 27 22 / 0.28);
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
