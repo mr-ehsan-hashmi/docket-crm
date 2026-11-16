@@ -18,7 +18,7 @@ export function ReviewerTools() {
   const failureOn = useSyncExternalStore(subscribeToFailureSwitch, isFailureSimulated, () => false);
 
   function refetchEverything() {
-    return queryClient.invalidateQueries();
+    return queryClient.resetQueries();
   }
 
   function handleFailureToggle(enabled: boolean) {

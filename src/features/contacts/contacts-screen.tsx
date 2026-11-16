@@ -38,7 +38,7 @@ export function ContactsScreen() {
       );
     }
 
-    if (contactsQuery.isError) {
+    if (contacts === undefined) {
       return (
         <ErrorState
           title="We couldn't load your contacts"
@@ -49,7 +49,7 @@ export function ContactsScreen() {
       );
     }
 
-    if (contactsQuery.data.length === 0) {
+    if (contacts.length === 0) {
       return (
         <StateMessage
           title="No one on file yet"

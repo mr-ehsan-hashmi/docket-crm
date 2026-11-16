@@ -104,7 +104,7 @@ export function ContactDetailScreen({ id }: { id: string }) {
     );
   }
 
-  if (detailQuery.isError) {
+  if (detailQuery.data === undefined || isNotFound(detailQuery.error)) {
     return (
       <>
         <PageHeader title="Contact" backLink={BACK_LINK} />

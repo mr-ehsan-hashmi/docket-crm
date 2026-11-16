@@ -41,7 +41,7 @@ export function EditContactScreen({ id }: { id: string }) {
         </LoadingRegion>
       );
     }
-    if (detailQuery.isError) {
+    if (detailQuery.data === undefined || isNotFound(detailQuery.error)) {
       return isNotFound(detailQuery.error) ? (
         <ContactNotFound />
       ) : (
