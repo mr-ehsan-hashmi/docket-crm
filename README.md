@@ -2,7 +2,7 @@
 
 A small CRM for a law firm's client intake desk: who enquired, what they need, who has picked it up, and where it stands.
 
-**Live:** _add Vercel URL_ · **Run locally:** `npm install && npm run dev` · **Checks:** `npm test`, `npm run typecheck`, `npm run lint`
+**Live:** https://docket-crm.vercel.app · **Run locally:** `npm install && npm run dev` · **Checks:** `npm test`, `npm run typecheck`, `npm run lint`
 
 To see the empty and error states without unplugging anything, open **Reviewer tools** in the footer.
 
@@ -40,4 +40,4 @@ Data is per browser. localStorage met "persist across refresh" with no sign-up w
 
 ## How I used AI
 
-I built this with Claude Code. I set the scope and reviewed the plan before any code was written; the agent then wrote most of the implementation and tested each flow in a browser, which surfaced three bugs that were fixed in separate commits (dropped keystrokes in the search box, a validation error that only appeared on the second submit, and screen-reader announcements that read out raw ids). I have read the code and can explain any part of it.
+I built this with Claude Code. I set the scope and reviewed the plan before any code was written; the agent then wrote most of the implementation and tested each flow in a browser, which surfaced four bugs that were fixed in separate commits (dropped keystrokes in the search box, a validation error that only appeared on the second submit, screen-reader announcements that read out raw ids, and a pipeline page that hung on a hard refresh in production only). I have read the code and can explain any part of it.
