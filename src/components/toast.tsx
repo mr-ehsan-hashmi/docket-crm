@@ -5,17 +5,31 @@ import { cn } from "@/lib/format";
 
 type ToastTone = "success" | "error";
 
+interface ToastAction {
+  label: string;
+  onClick: () => void;
+}
+
+interface ToastOptions {
+  tone?: ToastTone;
+  action?: ToastAction;
+}
+
 interface Toast {
   id: number;
   message: string;
   tone: ToastTone;
+  action?: ToastAction;
 }
 
 interface ToastContextValue {
-  showToast: (message: string, tone?: ToastTone) => void;
+  showToast: (message: string, options?: ToastOptions) => void;
 }
 
 const TOAST_DURATION_MS = 4500;
+// long enough to read the message and still reach the button
+const ACTION_TOAST_DURATION_MS = 8000;
+
 const ToastContext = createContext<ToastContextValue | null>(null);
 
 export function ToastProvider({ children }: { children: ReactNode }) {
@@ -27,10 +41,10 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const showToast = useCallback(
-    (message: string, tone: ToastTone = "success") => {
+    (message: string, { tone = "success", action }: ToastOptions = {}) => {
       const id = nextId.current++;
-      setToasts((current) => [...current, { id, message, tone }]);
-      setTimeout(() => dismiss(id), TOAST_DURATION_MS);
+      setToasts((current) => [...current, { id, message, tone, action }]);
+      setTimeout(() => dismiss(id), action ? ACTION_TOAST_DURATION_MS : TOAST_DURATION_MS);
     },
     [dismiss],
   );
@@ -54,6 +68,18 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             )}
           >
             <p className="flex-1">{toast.message}</p>
+            {toast.action ? (
+              <button
+                type="button"
+                onClick={() => {
+                  toast.action?.onClick();
+                  dismiss(toast.id);
+                }}
+                className="rounded px-1 font-semibold underline underline-offset-2 focus-visible:outline-white"
+              >
+                {toast.action.label}
+              </button>
+            ) : null}
             <button
               type="button"
               onClick={() => dismiss(toast.id)}

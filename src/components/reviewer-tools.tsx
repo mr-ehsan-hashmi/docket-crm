@@ -32,7 +32,7 @@ export function ReviewerTools() {
       void refetchEverything();
       showToast(mode === "sample" ? "Sample contacts restored." : "All contacts removed.");
     } catch {
-      showToast("This browser wouldn't let us change saved data.", "error");
+      showToast("This browser wouldn't let us change saved data.", { tone: "error" });
     }
   }
 

@@ -17,11 +17,11 @@ import { buttonStyles } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";
 import { LoadingRegion } from "@/components/ui/skeleton";
 import { ErrorState, StateMessage } from "@/components/ui/state-message";
-import { useToast } from "@/components/toast";
+import { useMoveContact } from "@/features/contacts/use-move-contact";
 import { groupByStatus } from "@/lib/contacts/filter";
 import { STATUS_LABELS } from "@/lib/contacts/labels";
-import { useChangeStatus, useContacts } from "@/lib/contacts/queries";
-import { CONTACT_STATUSES, type Contact, type ContactStatus } from "@/lib/contacts/types";
+import { useContacts } from "@/lib/contacts/queries";
+import { CONTACT_STATUSES, type ContactStatus } from "@/lib/contacts/types";
 import { PipelineCardPreview } from "./pipeline-card";
 import { PipelineColumn, PipelineColumnSkeleton } from "./pipeline-column";
 
@@ -58,31 +58,18 @@ export function PipelineSkeleton() {
 
 export function PipelineScreen() {
   const contactsQuery = useContacts();
-  const changeStatus = useChangeStatus();
-  const { showToast } = useToast();
+  const moveContact = useMoveContact();
   const [draggedId, setDraggedId] = useState<string | null>(null);
 
+  // mouse only, with a few px of travel so clicks on the name and the select still work.
+  // touch drag fights with scrolling the board, phones use the "Move to" menu instead
   const sensors = useSensors(useSensor(MouseSensor, { activationConstraint: { distance: 6 } }));
 
   const contacts = contactsQuery.data;
   const columns = useMemo(() => groupByStatus(contacts ?? []), [contacts]);
   const draggedContact = contacts?.find((contact) => contact.id === draggedId) ?? null;
 
-  function moveContact(contact: Contact, status: ContactStatus) {
-    if (contact.status === status) return;
-    changeStatus.mutate(
-      { id: contact.id, status },
-      {
-        onSuccess: () => showToast(`${contact.fullName} moved to ${STATUS_LABELS[status]}.`),
-        onError: () =>
-          showToast(
-            `Couldn't move ${contact.fullName}, so they're back in ${STATUS_LABELS[contact.status]}.`,
-            "error",
-          ),
-      },
-    );
-  }
-
+  // dnd-kit's default announcements read out raw ids
   const nameOf = (id: UniqueIdentifier) => contacts?.find((contact) => contact.id === id)?.fullName ?? "Contact";
   const columnOf = (id: UniqueIdentifier | undefined) => (isContactStatus(id) ? STATUS_LABELS[id] : null);
   const announcements: Announcements = {
