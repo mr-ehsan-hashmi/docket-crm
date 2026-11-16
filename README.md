@@ -1,43 +1,44 @@
 # Docket
 
-A small CRM for a law firm's client intake desk: who enquired, what they need, who has picked it up, and where it stands.
+[![CI](https://github.com/mr-ehsan-hashmi/docket-crm/actions/workflows/ci.yml/badge.svg)](https://github.com/mr-ehsan-hashmi/docket-crm/actions/workflows/ci.yml)
 
-**Live:** https://docket-crm.vercel.app · **Run locally:** `npm install && npm run dev` · **Checks:** `npm test`, `npm run typecheck`, `npm run lint`
+A small CRM for a law firm's intake desk: who enquired, what they need, who has picked it up and where it stands.
 
-To see the empty and error states without unplugging anything, open **Reviewer tools** in the footer.
+**Live:** https://docket-crm.vercel.app
+
+```bash
+npm install
+npm run dev        # http://localhost:3000
+npm test           # unit tests
+npm run test:e2e   # builds, then runs Playwright against the production build
+```
+
+Sample data is seeded on the first visit. "Reviewer tools" in the footer can fail every request or remove all contacts, to reach the error and empty states.
 
 ## Structure and state
 
-```
-src/app/         Routes only. Each page is a Suspense boundary around one screen component.
-src/features/    contacts/ and pipeline/: the screens and the components only they use.
-src/components/  App shell and shared primitives (Button, Field, StatusBadge, StateMessage, Skeleton).
-src/lib/api/     The only code that touches storage. Async, typed, can fail.
-src/lib/contacts Types, zod schema, pure filter/sort functions, TanStack Query hooks.
-```
+- `src/app`: routes only, each a Suspense boundary around one screen.
+- `src/features`: the `contacts` and `pipeline` screens plus their own components.
+- `src/components`: app shell and shared UI.
+- `src/lib/api`: the only code that touches storage. Async, typed, can fail.
+- `src/lib/contacts`: types, zod schema, pure functions and query hooks.
 
-There are three kinds of state and each has one home:
-
-- **Server state** (contacts, notes, activity) lives in TanStack Query. Every key hangs off `["contacts"]`, so one invalidation refreshes the list, the board and any open detail page. There is no global store because nothing else needs sharing.
-- **View state** (search, status filter, sort) lives in the URL, so a refresh keeps it and a filtered list can be shared.
-- **Form state** lives in react-hook-form, validated by a zod schema that also produces the TypeScript types.
-
-`lib/api` is a mock API over localStorage with ~450 ms of latency and a switch that makes every call fail. I built it first so every screen was written against real loading and error states. Replacing it with Supabase means rewriting that one folder.
+State has three homes. Server data is in TanStack Query under one `["contacts"]` key, so one invalidation refreshes the list, the board and any open detail page. Search, filters and sort are in the URL. Form state is in react-hook-form with a zod schema that also produces the types. No global store, nothing needed one.
 
 ## UI and UX decisions
 
-- **Domain first.** Contacts carry what an intake team asks on a first call: practice area, how they reached the firm, a matter summary, an assigned attorney. A phone number *or* an email is required, not both, because walk-ins often give only one.
-- **The list is the home screen.** No dashboard: with three statuses, the tab counts already are the dashboard.
-- **Two different empty states.** "Nobody on file yet" offers to add someone; "no contacts match" offers to clear the filter. They are different problems.
-- **Errors say what to do.** Validation appears on blur, names the fix, and every problem shows on the first submit. A failed save keeps what was typed. A failed background refresh keeps the data already on screen.
-- **Pipeline moves are optimistic** and roll back with an explanation if the save fails. Every card also has a "Move to" menu, which is how touch and keyboard users change status; dragging on a phone fights with scrolling.
-- **The timeline writes itself.** Status changes, edits and notes are logged by the API layer, so no screen can forget to record one.
-- **Look.** Paper, ink and one green, with a serif for names and headings, closer to a firm's letterhead than a SaaS template. Colour other than green always means status.
+- The fields are what intake asks on a first call. A phone number or an email is required, not both, because walk-ins often give only one.
+- The form warns when the person already looks to be on file (same email, phone or name). It only warns, since two people can share a phone.
+- A lead with no activity for three days shows as "Quiet for N days" and has its own filter. The usual way an intake desk fails is a lead nobody called back.
+- Pipeline moves are optimistic, roll back if the save fails and can be undone. Every card also has a "Move to" menu, which is the touch and keyboard path: dragging on a phone fights with scrolling.
+- Two different empty states. "Nobody on file" offers to add someone, "no match" offers to clear the filters. Errors keep what was typed and whatever was already on screen.
+- No delete. A firm keeps its intake records, so a contact gets closed instead.
+- Paper, ink and one green. Any other colour means status.
 
 ## One tradeoff
 
-Data is per browser. localStorage met "persist across refresh" with no sign-up wall for reviewers, but two intake staff would not see each other's changes, and filtering happens in memory. With more time I would move `lib/api` to Supabase (auth, row-level security, server-side search and pagination), add delete/archive with undo, and add Playwright tests for the create, edit and move flows. Unit tests currently cover the API layer, the schema and the filter logic.
+Data is per browser. localStorage covers "persists after refresh" without putting a sign-up wall in front of reviewers, but two members of staff would not see each other's changes (tabs in the same browser do stay in sync). With more time I would move `src/lib/api` to Supabase with auth and server-side search. That folder is the only one that would change.
 
-## How I used AI
+## AI use
 
-I built this with Claude Code. I set the scope and reviewed the plan before any code was written; the agent then wrote most of the implementation and tested each flow in a browser, which surfaced four bugs that were fixed in separate commits (dropped keystrokes in the search box, a validation error that only appeared on the second submit, screen-reader announcements that read out raw ids, and a pipeline page that hung on a hard refresh in production only). I have read the code and can explain any part of it.
+Most of the code was written with Claude Code, working from a plan I approved before any code existed. I then asked for an audit at a senior-review standard and chose which fixes and features to build from it. The agent also ran the app in a browser and wrote the tests, and several commits fix bugs those runs found: the search box dropping keystrokes, the pipeline hanging in production only, and sideways scrolling on phones.
