@@ -17,6 +17,7 @@ function CardBody({ contact, onMove }: CardBodyProps) {
       <Link
         href={`/contacts/${contact.id}`}
         className="rounded-sm font-medium text-ink hover:text-brand"
+        prefetch={false}
         // otherwise the browser starts a native link drag and dnd-kit never gets the gesture
         draggable={false}
       >

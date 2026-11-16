@@ -32,6 +32,7 @@ function ContactRow({ contact }: { contact: Contact }) {
     <li className="border-b border-rule last:border-b-0">
       <Link
         href={`/contacts/${contact.id}`}
+        prefetch={false}
         className={cn(ROW_GRID, "group block px-4 py-3.5 transition-colors hover:bg-paper/70 sm:px-5 -outline-offset-2")}
       >
         <div className="flex items-start justify-between gap-3 md:block">
