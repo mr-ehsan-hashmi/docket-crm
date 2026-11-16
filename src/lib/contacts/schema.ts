@@ -14,8 +14,7 @@ function countDigits(value: string) {
   return value.replace(/\D/g, "").length;
 }
 
-export const contactFormSchema = z
-  .object({
+const contactFieldsSchema = z.object({
     fullName: z
       .string()
       .trim()
@@ -62,11 +61,18 @@ export const contactFormSchema = z
         MATTER_SUMMARY_LIMIT,
         `Keep the summary under ${MATTER_SUMMARY_LIMIT} characters. Longer detail belongs in a note.`,
       ),
-  })
-  .refine((values) => values.email !== "" || values.phone !== "", {
+});
+
+const reachableFieldsSchema = contactFieldsSchema.pick({ email: true, phone: true });
+
+export const contactFormSchema = contactFieldsSchema.refine(
+  (values) => values.email.trim() !== "" || values.phone.trim() !== "",
+  {
     path: ["phone"],
     message: "Add a phone number or an email. We need one way to follow up.",
-  });
+    when: ({ value }) => reachableFieldsSchema.safeParse(value).success,
+  },
+);
 
 export type ContactFormInput = z.input<typeof contactFormSchema>;
 export type ContactFormValues = z.output<typeof contactFormSchema>;
