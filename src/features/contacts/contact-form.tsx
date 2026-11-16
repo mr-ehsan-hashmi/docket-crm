@@ -21,6 +21,7 @@ import {
 } from "@/lib/contacts/schema";
 import { CONTACT_STATUSES, PRACTICE_AREAS, REFERRAL_SOURCES, type Contact } from "@/lib/contacts/types";
 import { cn } from "@/lib/format";
+import { DuplicateWarning } from "./duplicate-warning";
 
 export const EMPTY_CONTACT_FORM: ContactFormInput = {
   fullName: "",
@@ -47,6 +48,7 @@ export function toFormInput(contact: Contact): ContactFormInput {
 }
 
 interface ContactFormProps {
+  contactId?: string;
   defaultValues: ContactFormInput;
   submitLabel: string;
   submittingLabel: string;
@@ -70,6 +72,7 @@ function FormSection({ title, children }: { title: string; children: React.React
 }
 
 export function ContactForm({
+  contactId,
   defaultValues,
   submitLabel,
   submittingLabel,
@@ -155,6 +158,8 @@ export function ContactForm({
               {...register("email", { deps: ["phone"] })}
             />
           </Field>
+
+          <DuplicateWarning control={control} excludeId={contactId} className="sm:col-span-2" />
         </FormSection>
 
         <FormSection title="What do they need?">

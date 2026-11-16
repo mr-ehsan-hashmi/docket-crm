@@ -57,6 +57,7 @@ export function EditContactScreen({ id }: { id: string }) {
 
     return (
       <ContactForm
+        contactId={id}
         defaultValues={toFormInput(detailQuery.data.contact)}
         submitLabel="Save changes"
         submittingLabel="Saving…"
