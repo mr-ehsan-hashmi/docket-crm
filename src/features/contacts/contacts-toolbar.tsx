@@ -34,7 +34,7 @@ export function ContactsToolbar({ filters, counts, onChange }: ContactsToolbarPr
           onChange={(event) => onChange({ query: event.target.value })}
           placeholder="Name, email, phone or attorney"
           aria-label="Search contacts"
-          className="h-11 w-full rounded-md border border-rule-strong bg-card pl-9 pr-3 text-sm placeholder:text-ink-faint"
+          className="h-11 w-full rounded-md border border-field bg-card pl-9 pr-3 text-base placeholder:text-ink-faint sm:text-sm"
         />
       </div>
 
@@ -70,7 +70,7 @@ export function ContactsToolbar({ filters, counts, onChange }: ContactsToolbarPr
         <select
           value={filters.sort}
           onChange={(event) => onChange({ sort: event.target.value as ContactSort })}
-          className="h-11 flex-1 rounded-md border border-rule-strong bg-card px-3 text-sm text-ink lg:flex-none"
+          className="h-11 flex-1 rounded-md border border-field bg-card px-3 text-base text-ink sm:text-sm lg:flex-none"
         >
           {CONTACT_SORTS.map((sort) => (
             <option key={sort} value={sort}>

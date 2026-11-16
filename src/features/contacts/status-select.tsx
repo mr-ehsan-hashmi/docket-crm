@@ -35,7 +35,7 @@ export function StatusSelect({ contact }: { contact: Contact }) {
       <select
         value={contact.status}
         onChange={(event) => handleChange(event.target.value as ContactStatus)}
-        className="h-11 rounded-md border border-rule-strong bg-card pl-7 pr-3 text-sm font-medium text-ink"
+        className="h-11 rounded-md border border-field bg-card pl-7 pr-3 text-base font-medium text-ink sm:text-sm"
       >
         {CONTACT_STATUSES.map((status) => (
           <option key={status} value={status}>

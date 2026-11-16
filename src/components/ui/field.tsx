@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/format";
 
 export const inputClasses = cn(
-  "w-full rounded-md border border-rule-strong bg-card px-3 text-sm text-ink placeholder:text-ink-faint",
+  "w-full rounded-md border border-field bg-card px-3 text-base text-ink placeholder:text-ink-faint sm:text-sm",
   "aria-invalid:border-danger aria-invalid:bg-danger-tint/40",
 );
 

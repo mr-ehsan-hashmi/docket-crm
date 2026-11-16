@@ -17,6 +17,7 @@ function CardBody({ contact, onMove }: CardBodyProps) {
       <Link
         href={`/contacts/${contact.id}`}
         className="rounded-sm font-medium text-ink hover:text-brand"
+        // otherwise the browser starts a native link drag and dnd-kit never gets the gesture
         draggable={false}
       >
         {contact.fullName}
@@ -29,11 +30,11 @@ function CardBody({ contact, onMove }: CardBodyProps) {
       {onMove ? (
         <label className="mt-3 flex items-center gap-2 border-t border-rule pt-2.5 text-xs text-ink-soft">
           <span className="shrink-0">Move to</span>
-          <span className="sr-only">another status: {contact.fullName}</span>
           <select
             value=""
+            aria-label={`Move to another status, ${contact.fullName}`}
             onChange={(event) => onMove(contact, event.target.value as ContactStatus)}
-            className="h-8 flex-1 rounded border border-rule-strong bg-card px-2 text-xs text-ink"
+            className="h-11 flex-1 rounded border border-field bg-card px-2 text-base text-ink md:h-9 md:text-xs"
           >
             <option value="" disabled>
               Choose…

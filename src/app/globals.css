@@ -8,9 +8,11 @@
   --color-card: #fffdf8;
   --color-ink: #1d1b16;
   --color-ink-soft: #57524a;
-  --color-ink-faint: #7d776b;
+  --color-ink-faint: #6b665b;
   --color-rule: #e3ddcf;
   --color-rule-strong: #cdc5b2;
+  /* form control borders need 3:1 against the page, rule-strong is too light for that */
+  --color-field: #8f8876;
 
   --color-brand: #1f4a3d;
   --color-brand-deep: #163529;
