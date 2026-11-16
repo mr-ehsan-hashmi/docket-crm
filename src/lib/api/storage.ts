@@ -8,7 +8,7 @@ export interface Database {
   activities: Activity[];
 }
 
-const DATABASE_KEY = "docket:db:v1";
+export const DATABASE_KEY = "docket:db:v1";
 
 export function createId(): string {
   return crypto.randomUUID();
