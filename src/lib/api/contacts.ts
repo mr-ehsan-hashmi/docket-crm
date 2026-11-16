@@ -1,8 +1,8 @@
 import type { ContactFormValues } from "@/lib/contacts/schema";
 import type { Activity, Contact, ContactDetail, ContactStatus, Note } from "@/lib/contacts/types";
+import { excerptOf } from "@/lib/format";
 import { ApiError } from "./errors";
 import { isFailureSimulated } from "./failure-switch";
-import { excerptOf } from "@/lib/format";
 import { createId, readDatabase, writeDatabase, type Database } from "./storage";
 
 const LATENCY_MS = process.env.NODE_ENV === "test" ? 0 : 450;
@@ -23,16 +23,31 @@ function wait(ms: number) {
   return new Promise<void>((resolve) => setTimeout(resolve, ms));
 }
 
-async function request<T>(operation: (database: Database) => T, options?: { write: boolean }): Promise<T> {
-  if (LATENCY_MS > 0) await wait(LATENCY_MS);
-  if (isFailureSimulated()) {
-    throw new ApiError("network", "We couldn't reach the server. Check your connection and try again.");
+function settle<T>(run: () => T): { value: T } | { error: unknown } {
+  try {
+    return { value: run() };
+  } catch (error) {
+    return { error };
   }
+}
 
-  const database = readDatabase();
-  const result = operation(database);
-  if (options?.write) writeDatabase(database);
-  return result;
+// The work happens straight away and only the reply is delayed, the way a server has
+// already handled a request while the response is still travelling. Delaying the write
+// itself meant a reload right after a change could lose it.
+async function request<T>(operation: (database: Database) => T, options?: { write: boolean }): Promise<T> {
+  const outcome = settle(() => {
+    if (isFailureSimulated()) {
+      throw new ApiError("network", "We couldn't reach the server. Check your connection and try again.");
+    }
+    const database = readDatabase();
+    const result = operation(database);
+    if (options?.write) writeDatabase(database);
+    return result;
+  });
+
+  if (LATENCY_MS > 0) await wait(LATENCY_MS);
+  if ("error" in outcome) throw outcome.error;
+  return outcome.value;
 }
 
 function findContact(database: Database, id: string): Contact {
