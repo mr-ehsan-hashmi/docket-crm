@@ -6,8 +6,10 @@ import {
   MouseSensor,
   useSensor,
   useSensors,
+  type Announcements,
   type DragEndEvent,
   type DragStartEvent,
+  type UniqueIdentifier,
 } from "@dnd-kit/core";
 import Link from "next/link";
 import { useMemo, useState } from "react";
@@ -81,6 +83,21 @@ export function PipelineScreen() {
     );
   }
 
+  const nameOf = (id: UniqueIdentifier) => contacts?.find((contact) => contact.id === id)?.fullName ?? "Contact";
+  const columnOf = (id: UniqueIdentifier | undefined) => (isContactStatus(id) ? STATUS_LABELS[id] : null);
+  const announcements: Announcements = {
+    onDragStart: ({ active }) => `Picked up ${nameOf(active.id)}.`,
+    onDragOver: ({ active, over }) => {
+      const column = columnOf(over?.id);
+      return column ? `${nameOf(active.id)} is over ${column}.` : undefined;
+    },
+    onDragEnd: ({ active, over }) => {
+      const column = columnOf(over?.id);
+      return column ? `${nameOf(active.id)} dropped on ${column}.` : `${nameOf(active.id)} put back.`;
+    },
+    onDragCancel: ({ active }) => `Move cancelled. ${nameOf(active.id)} put back.`,
+  };
+
   function handleDragStart(event: DragStartEvent) {
     setDraggedId(String(event.active.id));
   }
@@ -101,7 +118,7 @@ export function PipelineScreen() {
       );
     }
 
-    if (contactsQuery.isError) {
+    if (contacts === undefined) {
       return (
         <ErrorState
           title="We couldn't load the pipeline"
@@ -112,7 +129,7 @@ export function PipelineScreen() {
       );
     }
 
-    if (contactsQuery.data.length === 0) {
+    if (contacts.length === 0) {
       return (
         <StateMessage
           title="The pipeline is empty"
@@ -129,6 +146,7 @@ export function PipelineScreen() {
     return (
       <DndContext
         sensors={sensors}
+        accessibility={{ announcements }}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
         onDragCancel={() => setDraggedId(null)}
