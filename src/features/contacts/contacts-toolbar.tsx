@@ -1,0 +1,84 @@
+"use client";
+
+import { SearchIcon } from "@/components/icons";
+import {
+  CONTACT_SORTS,
+  SORT_LABELS,
+  type ContactFilters,
+  type ContactSort,
+  type StatusFilter,
+} from "@/lib/contacts/filter";
+import { STATUS_LABELS } from "@/lib/contacts/labels";
+import { CONTACT_STATUSES } from "@/lib/contacts/types";
+import { cn } from "@/lib/format";
+
+const STATUS_TABS: Array<{ value: StatusFilter; label: string }> = [
+  { value: "all", label: "All" },
+  ...CONTACT_STATUSES.map((status) => ({ value: status, label: STATUS_LABELS[status] })),
+];
+
+interface ContactsToolbarProps {
+  filters: ContactFilters;
+  counts: Record<StatusFilter, number> | undefined;
+  onChange: (changes: Partial<ContactFilters>) => void;
+}
+
+export function ContactsToolbar({ filters, counts, onChange }: ContactsToolbarProps) {
+  return (
+    <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center">
+      <div className="relative lg:w-72">
+        <SearchIcon className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-ink-faint" />
+        <input
+          type="search"
+          value={filters.query}
+          onChange={(event) => onChange({ query: event.target.value })}
+          placeholder="Name, email, phone or attorney"
+          aria-label="Search contacts"
+          className="h-11 w-full rounded-md border border-rule-strong bg-card pl-9 pr-3 text-sm placeholder:text-ink-faint"
+        />
+      </div>
+
+      <div
+        role="group"
+        aria-label="Filter by status"
+        className="-mx-4 flex gap-1 overflow-x-auto px-4 sm:mx-0 sm:px-0 lg:flex-1"
+      >
+        {STATUS_TABS.map((tab) => {
+          const isSelected = filters.status === tab.value;
+          return (
+            <button
+              key={tab.value}
+              type="button"
+              aria-pressed={isSelected}
+              onClick={() => onChange({ status: tab.value })}
+              className={cn(
+                "flex h-11 shrink-0 items-center gap-2 rounded-md px-3 text-sm font-medium transition-colors",
+                isSelected ? "bg-ink text-paper" : "text-ink-soft hover:bg-rule/60 hover:text-ink",
+              )}
+            >
+              {tab.label}
+              <span className={cn("text-xs tabular-nums", isSelected ? "text-paper/70" : "text-ink-faint")}>
+                {counts ? counts[tab.value] : "–"}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      <label className="flex items-center gap-2 text-sm text-ink-soft">
+        <span className="shrink-0">Sort by</span>
+        <select
+          value={filters.sort}
+          onChange={(event) => onChange({ sort: event.target.value as ContactSort })}
+          className="h-11 flex-1 rounded-md border border-rule-strong bg-card px-3 text-sm text-ink lg:flex-none"
+        >
+          {CONTACT_SORTS.map((sort) => (
+            <option key={sort} value={sort}>
+              {SORT_LABELS[sort]}
+            </option>
+          ))}
+        </select>
+      </label>
+    </div>
+  );
+}
