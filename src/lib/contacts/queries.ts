@@ -35,7 +35,10 @@ export function useCreateContact() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (values: ContactFormValues) => createContact(values),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: contactKeys.all }),
+    // not returned: the new contact's page doesn't need the list, so don't hold the redirect for it
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: contactKeys.all });
+    },
   });
 }
 
@@ -43,6 +46,8 @@ export function useUpdateContact(id: string) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (values: ContactFormValues) => updateContact(id, values),
+    // returned on purpose: the mutation stays pending until the detail data is fresh,
+    // so the page we go back to never shows the old values
     onSuccess: () => queryClient.invalidateQueries({ queryKey: contactKeys.all }),
   });
 }
