@@ -41,8 +41,8 @@ Data is per browser. localStorage covers "persists after refresh" without puttin
 
 ## AI use
 
-I read the brief first and made sure I understood what was being asked. After that I used AI tools through the whole thing, mainly Claude Code and also Gemini.
+I started by breaking down the requirements and defining the system architecture before writing any code. Throughout the build, I used Claude Code and Gemini as execution accelerators while maintaining strict ownership over architectural decisions, scope, and code quality.
 
-We started with a plan, and I only moved on once I was happy with it. Most of the code was then written by the AI while I steered: what to build, what to leave out, and what I wasn't convinced by. I questioned the folder structure, the choice not to use a UI library, and whether we were really using Next.js.
+I only moved from planning to implementation once the data flow and boundaries were solid. During development, I actively challenged and refined AI-generated proposals—specifically around folder structure, the trade-offs of avoiding a heavy UI library, and ensuring we were leveraging Next.js effectively rather than over-engineering.
 
-Bugs were fixed one at a time, each in its own commit. Some came out of the tests, like the search box dropping letters and the pipeline hanging only in production. Others I found myself while using the app, like the header not staying in place, the page jumping when a search shortened the list, and the dropdown arrows sitting on the edge.
+Every bug fix was isolated in its own commit for a clean git history. Automated tests caught edge cases like input debouncing/dropping characters and a production-only pipeline hang, while hands-on QA surfaced UI polish issues like sticky header positioning, layout shifts during filtering, and select-dropdown alignment.
