@@ -20,7 +20,7 @@ function NavList({ pathname }: { pathname: string | null }) {
             href={item.href}
             aria-current={isCurrent ? "page" : undefined}
             className={cn(
-              "border-b-2 py-3 text-sm font-medium transition-colors sm:py-5",
+              "border-b-2 py-3 text-sm font-medium transition-colors -outline-offset-2 sm:py-5",
               isCurrent
                 ? "border-brand text-ink"
                 : "border-transparent text-ink-soft hover:border-rule-strong hover:text-ink",

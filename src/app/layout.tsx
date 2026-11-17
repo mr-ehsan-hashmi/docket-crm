@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${instrumentSans.variable} ${newsreader.variable} h-full antialiased`}>
-      <body className="flex min-h-full flex-col">
+      <body className="flex h-dvh flex-col overflow-hidden">
         <Providers>
           <a
             href="#main"
@@ -35,10 +35,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             Skip to content
           </a>
           <AppHeader />
-          <main id="main" className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 sm:py-10">
-            {children}
-          </main>
-          <AppFooter />
+          {/* only this part scrolls, so the header stays put and the scrollbar starts below it */}
+          <div className="scroll-area flex flex-1 flex-col overflow-y-auto">
+            <main id="main" className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 sm:py-10">
+              {children}
+            </main>
+            <AppFooter />
+          </div>
         </Providers>
       </body>
     </html>

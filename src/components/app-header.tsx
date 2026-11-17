@@ -6,7 +6,7 @@ import { AppLink } from "./unsaved-changes";
 
 export function AppHeader() {
   return (
-    <header className="border-b border-rule bg-card">
+    <header className="scroll-gutter shrink-0 overflow-hidden border-b border-rule bg-card">
       <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-8 gap-y-2 px-4 pt-3 sm:flex-nowrap sm:px-6 sm:pt-0">
         <AppLink href="/contacts" className="flex items-baseline gap-2 rounded-sm">
           <span className="font-serif text-2xl font-semibold tracking-tight text-brand">Docket</span>

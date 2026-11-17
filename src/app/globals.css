@@ -38,6 +38,28 @@ body {
   font-family: var(--font-sans);
 }
 
+/* keep room for the scrollbar even when the page is short, so nothing shifts
+   sideways when a search shrinks the list. the header reserves the same gap to stay aligned */
+.scroll-area,
+.scroll-gutter {
+  scrollbar-gutter: stable;
+}
+
+/* on navigation next scrolls the new page into view; without this it lands
+   flush under the header and eats the top padding of <main> */
+.scroll-area {
+  scroll-padding-top: 2.5rem;
+}
+
+@utility select-chevron {
+  appearance: none;
+  padding-right: 2.25rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2357524a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem;
+}
+
 :focus-visible {
   outline: 2px solid var(--color-brand);
   outline-offset: 2px;
