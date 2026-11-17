@@ -13,7 +13,12 @@ export default defineConfig({
     trace: "on-first-retry",
   },
   projects: [
-    { name: "desktop", use: { ...devices["Desktop Chrome"] }, testIgnore: /mobile\.spec\.ts/ },
+    {
+      name: "desktop",
+      // headless chromium hides scrollbars by default, which would make the layout tests pass for nothing
+      use: { ...devices["Desktop Chrome"], launchOptions: { ignoreDefaultArgs: ["--hide-scrollbars"] } },
+      testIgnore: /mobile\.spec\.ts/,
+    },
     { name: "mobile", use: { ...devices["Pixel 7"] }, testMatch: /mobile\.spec\.ts/ },
   ],
   // runs against the production build on purpose: one bug so far only showed up there

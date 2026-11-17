@@ -20,6 +20,7 @@ test("adds a note and logs it on the timeline", async ({ page }) => {
 test("a quiet lead stops being flagged once someone adds a note", async ({ page }) => {
   await page.goto("/contacts");
   await page.getByRole("link", { name: /Priya Raghunathan/ }).click();
+  await expect(page.getByRole("heading", { level: 1, name: "Priya Raghunathan" })).toBeVisible();
   await expect(page.getByText("Quiet for 4 days.")).toBeVisible();
 
   await page.getByLabel("Add a note").fill("Emailed her the consultation times.");
@@ -31,8 +32,9 @@ test("a quiet lead stops being flagged once someone adds a note", async ({ page 
 test("changes status from the detail page", async ({ page }) => {
   await page.goto("/contacts");
   await page.getByRole("link", { name: /Amara Osei/ }).click();
+  await expect(page.getByRole("heading", { level: 1, name: "Amara Osei" })).toBeVisible();
 
-  await page.getByLabel("Status").selectOption("active");
+  await page.getByLabel("Status", { exact: true }).selectOption("active");
   await expect(page.getByText("Amara Osei moved to Active.")).toBeVisible();
   await expect(page.getByRole("region", { name: "Activity" })).toContainText("Moved from Lead to Active");
 });

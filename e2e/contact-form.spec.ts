@@ -64,6 +64,7 @@ test("edits a contact and records what changed", async ({ page }) => {
   await page.getByRole("link", { name: /Grace Whitlock/ }).click();
   await page.getByRole("link", { name: "Edit details" }).click();
 
+  await expect(page.getByRole("heading", { level: 1, name: "Edit Grace Whitlock" })).toBeVisible();
   await expect(page.getByLabel("Full name")).toHaveValue("Grace Whitlock");
   await page.getByLabel("Phone").fill("+1 628 555 0999");
   await page.getByRole("button", { name: "Save changes" }).click();

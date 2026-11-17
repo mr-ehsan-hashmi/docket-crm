@@ -25,6 +25,26 @@ test("no screen scrolls sideways on a phone", async ({ page }) => {
   await expectNoSidewaysScroll(page);
 });
 
+test("a very long word wraps instead of stretching the page", async ({ page }) => {
+  const longName = "Wolfeschlegelsteinhausenbergerdorffwelchevoralternwarengewissenhaftschaferswesse";
+
+  await page.goto("/contacts/new");
+  await page.getByLabel("Full name").fill(longName);
+  await page.getByLabel("Email").fill("someone.with.a.long.address@intake-department.example-lawfirm.co.uk");
+  await page.getByLabel("Practice area").selectOption("corporate");
+  await page.getByLabel("Matter summary").fill("x".repeat(200));
+  await page.getByRole("button", { name: "Add contact" }).click();
+
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Wolfeschlegel");
+  await expectNoSidewaysScroll(page);
+
+  await page.goto("/pipeline");
+  const card = page.getByRole("listitem").filter({ hasText: "Wolfeschlegel" });
+  await expect(card).toBeVisible();
+  const spill = await card.evaluate((element) => element.scrollWidth - element.clientWidth);
+  expect(spill).toBe(0);
+});
+
 test("status can be changed on a phone, with a finger-sized control", async ({ page }) => {
   await page.goto("/pipeline");
   const menu = page.getByLabel("Move to another status, Amara Osei");
