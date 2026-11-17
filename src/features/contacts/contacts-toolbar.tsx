@@ -87,7 +87,7 @@ export function ContactsToolbar({ filters, counts, followUpCount, onChange }: Co
         <select
           value={filters.sort}
           onChange={(event) => onChange({ sort: event.target.value as ContactSort })}
-          className="h-11 flex-1 rounded-md border border-field bg-card px-3 text-base text-ink sm:text-sm lg:flex-none"
+          className="select-chevron h-11 flex-1 rounded-md border border-field bg-card pl-3 text-base text-ink sm:text-sm lg:flex-none"
         >
           {CONTACT_SORTS.map((sort) => (
             <option key={sort} value={sort}>

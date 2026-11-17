@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
 import { Button, buttonStyles } from "@/components/ui/button";
-import { Field, describedBy, inputClasses } from "@/components/ui/field";
+import { Field, describedBy, inputClasses, selectClasses } from "@/components/ui/field";
 import { AppLink, useUnsavedChanges } from "@/components/unsaved-changes";
 import { describeError } from "@/lib/api/errors";
 import {
@@ -59,7 +59,6 @@ interface ContactFormProps {
   submitError: unknown;
 }
 
-const selectClasses = cn(inputClasses, "h-11");
 const textInputClasses = cn(inputClasses, "h-11");
 
 function FormSection({ title, children }: { title: string; children: React.ReactNode }) {

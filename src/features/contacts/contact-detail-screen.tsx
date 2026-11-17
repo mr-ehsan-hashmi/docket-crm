@@ -157,7 +157,7 @@ export function ContactDetailScreen({ id }: { id: string }) {
               Matter summary
             </h2>
             {contact.matterSummary ? (
-              <p className="mt-2 font-serif text-lg leading-relaxed text-ink">{contact.matterSummary}</p>
+              <p className="wrap-anywhere mt-2 font-serif text-lg leading-relaxed text-ink">{contact.matterSummary}</p>
             ) : (
               <p className="mt-2 text-sm text-ink-soft">
                 No summary yet.{" "}

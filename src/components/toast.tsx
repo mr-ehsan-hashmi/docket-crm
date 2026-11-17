@@ -67,7 +67,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               toast.tone === "error" ? "bg-danger text-white" : "bg-ink text-paper",
             )}
           >
-            <p className="flex-1">{toast.message}</p>
+            <p className="wrap-anywhere flex-1">{toast.message}</p>
             {toast.action ? (
               <button
                 type="button"

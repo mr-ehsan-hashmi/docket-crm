@@ -56,7 +56,7 @@ export function ActivityTimeline({ activities }: { activities: Activity[] }) {
                   )}
                 />
                 <p className="text-sm text-ink">{summary}</p>
-                {detail ? <p className="mt-0.5 text-sm text-ink-soft">&ldquo;{detail}&rdquo;</p> : null}
+                {detail ? <p className="wrap-anywhere mt-0.5 text-sm text-ink-soft">&ldquo;{detail}&rdquo;</p> : null}
                 <p className="mt-0.5 text-xs text-ink-faint">
                   <time dateTime={activity.createdAt}>{formatDateTime(activity.createdAt)}</time>
                 </p>

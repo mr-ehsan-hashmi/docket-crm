@@ -45,7 +45,7 @@ export function DuplicateWarning({ control, excludeId, className }: DuplicateWar
         </p>
         <ul className="mt-3 space-y-2">
           {matches.slice(0, MAX_SHOWN).map(({ contact, reasons }) => (
-            <li key={contact.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+            <li key={contact.id} className="wrap-anywhere flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
               <a
                 href={`/contacts/${contact.id}`}
                 target="_blank"

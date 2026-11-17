@@ -1,10 +1,14 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/format";
 
-export const inputClasses = cn(
-  "w-full rounded-md border border-field bg-card px-3 text-base text-ink placeholder:text-ink-faint sm:text-sm",
+const controlClasses = cn(
+  "w-full rounded-md border border-field bg-card text-base text-ink placeholder:text-ink-faint sm:text-sm",
   "aria-invalid:border-danger aria-invalid:bg-danger-tint/40",
 );
+
+export const inputClasses = cn(controlClasses, "px-3");
+// select-chevron draws our own arrow, the native one sits flush against the right edge
+export const selectClasses = cn(controlClasses, "select-chevron h-11 pl-3");
 
 interface FieldProps {
   id: string;

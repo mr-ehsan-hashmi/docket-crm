@@ -15,7 +15,7 @@ export function PageHeader({ title, description, backLink, actions }: PageHeader
       {backLink ? (
         <AppLink
           href={backLink.href}
-          className="mb-3 inline-flex items-center gap-1.5 rounded-sm text-sm text-ink-soft hover:text-ink"
+          className="-mt-2 mb-1 inline-flex min-h-10 items-center gap-1.5 rounded-sm text-sm text-ink-soft hover:text-ink"
         >
           <ArrowLeftIcon />
           {backLink.label}
@@ -23,7 +23,7 @@ export function PageHeader({ title, description, backLink, actions }: PageHeader
       ) : null}
       <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
         <div className="min-w-0">
-          <h1 className="font-serif text-3xl font-medium tracking-tight text-ink sm:text-4xl">{title}</h1>
+          <h1 className="wrap-anywhere font-serif text-3xl font-medium tracking-tight text-ink sm:text-4xl">{title}</h1>
           {description ? <p className="mt-1 text-sm text-ink-soft">{description}</p> : null}
         </div>
         {actions ? <div className="flex flex-wrap items-center gap-3">{actions}</div> : null}

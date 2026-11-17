@@ -69,7 +69,7 @@ export function NotesPanel({ contactId, notes }: { contactId: string; notes: Not
         <ul className="mt-4 space-y-3">
           {notes.map((note) => (
             <li key={note.id} className="rounded-md border border-rule bg-card px-4 py-3 shadow-card">
-              <p className="whitespace-pre-wrap text-sm leading-relaxed text-ink">{note.body}</p>
+              <p className="wrap-anywhere whitespace-pre-wrap text-sm leading-relaxed text-ink">{note.body}</p>
               <p className="mt-2 text-xs text-ink-faint">
                 <time dateTime={note.createdAt}>{formatDateTime(note.createdAt)}</time>
               </p>

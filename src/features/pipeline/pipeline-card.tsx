@@ -36,7 +36,7 @@ function CardBody({ contact, onMove }: CardBodyProps) {
             value=""
             aria-label={`Move to another status, ${contact.fullName}`}
             onChange={(event) => onMove(contact, event.target.value as ContactStatus)}
-            className="h-11 flex-1 rounded border border-field bg-card px-2 text-base text-ink md:h-9 md:text-xs"
+            className="select-chevron h-11 min-w-0 flex-1 rounded border border-field bg-card pl-2.5 text-base text-ink md:h-9 md:text-xs"
           >
             <option value="" disabled>
               Choose…
@@ -53,7 +53,7 @@ function CardBody({ contact, onMove }: CardBodyProps) {
   );
 }
 
-const CARD_CLASSES = "rounded-md border border-rule bg-card p-3.5 shadow-card";
+const CARD_CLASSES = "wrap-anywhere rounded-md border border-rule bg-card p-3.5 shadow-card";
 
 export function PipelineCard({ contact, onMove }: Required<CardBodyProps>) {
   const { setNodeRef, listeners, isDragging } = useDraggable({ id: contact.id });
