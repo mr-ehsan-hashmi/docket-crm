@@ -36,6 +36,13 @@ test("finds a contact by phone number however it is typed", async ({ page }) => 
   await expect(rows(page).first()).toContainText("Amara Osei");
 });
 
+test("a contact opens even when clicked straight after typing a search", async ({ page }) => {
+  await page.getByRole("searchbox", { name: "Search contacts" }).fill("sofia");
+  await page.getByRole("link", { name: /Sofia Bianchi/ }).click();
+
+  await expect(page.getByRole("heading", { level: 1, name: "Sofia Bianchi" })).toBeVisible();
+});
+
 test("sorts by name", async ({ page }) => {
   await page.getByLabel("Sort by").selectOption("name");
   await expect(rows(page).first()).toContainText("Amara Osei");

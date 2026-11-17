@@ -34,8 +34,22 @@ export function useContactFilters() {
 
   useEffect(() => {
     if (query === urlFilters.query) return;
-    const timer = setTimeout(() => writeUrl({ ...urlFilters, query }), URL_WRITE_DELAY_MS);
-    return () => clearTimeout(timer);
+
+    const write = () => writeUrl({ ...urlFilters, query });
+    const timer = setTimeout(write, URL_WRITE_DELAY_MS);
+
+    // A click can start a navigation, and a url write that lands after it has started
+    // cancels it. So on any click, write straight away instead of waiting for the timer.
+    const writeNow = () => {
+      clearTimeout(timer);
+      write();
+    };
+    document.addEventListener("click", writeNow, { capture: true, once: true });
+
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener("click", writeNow, { capture: true });
+    };
   }, [query, urlFilters, writeUrl]);
 
   const filters = useMemo(() => ({ ...urlFilters, query }), [urlFilters, query]);
