@@ -41,4 +41,8 @@ Data is per browser. localStorage covers "persists after refresh" without puttin
 
 ## AI use
 
-Most of the code was written with Claude Code, working from a plan I approved before any code existed. I then asked for an audit at a senior-review standard and chose which fixes and features to build from it. The agent also ran the app in a browser and wrote the tests, and several commits fix bugs those runs found: the search box dropping keystrokes, the pipeline hanging in production only, and sideways scrolling on phones.
+I read the brief first and made sure I understood what was being asked. After that I used AI tools through the whole thing, mainly Claude Code and also Gemini.
+
+We started with a plan, and I only moved on once I was happy with it. Most of the code was then written by the AI while I steered: what to build, what to leave out, and what I wasn't convinced by. I questioned the folder structure, the choice not to use a UI library, and whether we were really using Next.js.
+
+Bugs were fixed one at a time, each in its own commit. Some came out of the tests, like the search box dropping letters and the pipeline hanging only in production. Others I found myself while using the app, like the header not staying in place, the page jumping when a search shortened the list, and the dropdown arrows sitting on the edge.
